@@ -1,0 +1,20 @@
+{
+    "name": "esska/base-php",
+    "description": "Simple base PHP for beginners",
+    "authors": [
+        {
+            "name": "MehdiRouis",
+            "email": "mehdi.rouis.1@laposte.net"
+        }
+    ],
+    "autoload" : {
+        "psr-4" : {
+            "App\\" : "src/App",
+            "Models\\" : "src/Models",
+            "Controllers\\" : "src/Controllers"
+        }
+    },
+    "require": {
+        "ext-pdo" : ""
+    }
+}
