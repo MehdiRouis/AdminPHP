@@ -26,6 +26,20 @@
                 </div>
             </div>
         </div>
+        <?php if($user->hasRight('delete-projects')) { ?>
+        <div id="deleteModal" class="modal">
+            <div class="modal-content red-text">
+                <h1>Suppression d'un projet</h1>
+                <div class="divider mb-10"></div>
+                <p>Êtes-vous sûr de vouloir supprimer ce projet?</p>
+                <p>Toutes les informations liés au projet seront définitivement supprimées!</p>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="modal-close waves-effect waves-green btn-flat">Annuler</a>
+                <a id="confirm-delete-user" href="<?= $router->getFullUrl('deleteProject', ['id' => $project->getId(), 'csrf' => $user->getCSRFToken()]) ?>" class="waves-effect waves-green btn-flat red white-text">Confirmer</a>
+            </div>
+        </div>
+        <?php } ?>
         <div class="col s12 m8">
             <div class="card">
                 <div class="card-content center-align">

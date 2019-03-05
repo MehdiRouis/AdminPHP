@@ -204,6 +204,27 @@ class User extends Session {
         }
     }
 
+
+    /**
+     * @param string $userName
+     * @param string $lastName
+     * @param string $firstName
+     * @param int $rankId
+     * @param string $email
+     * @param string $phoneNumber
+     * @param string $birthDay
+     * @param string $password
+     * @param int $shopPoint
+     * @param string $profileType
+     * @return \PDOStatement
+     */
+    public function editAll($userName, $lastName, $firstName, $rankId, $email, $phoneNumber, $birthDay, $shopPoint, $profileType) {
+        $shopPoint = $shopPoint ? $shopPoint : 0;
+        $req = $this->db->query('UPDATE alive_users SET userName = ?, lastName = ?, firstName = ?, `rank` = ?, email = ?, phoneNumber = ?, birthDay = ?, shopPoints = ?, profile_type = ? WHERE id = ?',
+            [$userName, $lastName, $firstName, $rankId, $email, $phoneNumber, $birthDay, $shopPoint, $profileType, $this->getId()]);
+        return $req;
+    }
+
     /**
      * Restreindre l'accès à des droits spécifique.
      * @param $permissionName
@@ -268,7 +289,7 @@ class User extends Session {
      * @return string
      */
     private function getInitial($value): ?string {
-        return $value[0] === '&' ? substr($value, 0, strpos($value, ';')+strlen(';')) : $value[0];
+        return $value[0] === '&' ? substr($value, 0, strpos($value, ';')+strlen(';')) : strtoupper($value[0]);
     }
 
     /**
@@ -334,9 +355,9 @@ class User extends Session {
     /**
      * @return string
      */
-    public function getBirthDay(): ?string
+    public function getBirthDay($format = 'd/m/Y'): ?string
     {
-        return date('d/m/Y', strtotime($this->birthDay));
+        return date($format, strtotime($this->birthDay));
     }
 
     /**
@@ -579,6 +600,15 @@ class User extends Session {
             $errors->setError($inputKey, 'Clé introuvable.');
         }
         return $errors->getErrors();
+    }
+
+    public function getLowerRanks() {
+        $req = $this->db->query('SELECT id FROM alive_users_ranks WHERE id <= ?', [$this->getRank()->getId()]);
+        $ranks = [];
+        while($rank = $req->fetch()) {
+            $ranks[] = new Rank($rank->id);
+        }
+        return $ranks;
     }
 
     /**

@@ -39,18 +39,19 @@
     <?php
     $navbar->addUserView($user);
     $navbar->add('dashboard', 'ACCUEIL', 'fas fa-home');
-    if($user->hasRight('edit-permissions')) {
-        $navbar->add('permissions', 'PERMISSIONS', 'far fa-hand-point-right');
-    }
-    if($user->hasRight('view-ranks')) {
-        $navbar->add('ranks', 'RANGS', 'fas fa-users');
-    }
-    if($user->hasRight('view-projects')) {
-        $navbar->add('projects', 'PROJETS', 'fas fa-project-diagram');
-    }
-    if($user->hasRight('view-users')) {
-        $navbar->add('allUsers', 'UTILISATEURS', 'fas fa-users');
-    }
+    $navbar->addDropDown('PERMISSIONS',
+        [
+                ['label' => 'LISTE DES PERMISSIONS', 'route' => 'permissions', 'icon' => 'far fa-hand-point-right', 'permission' => 'edit-permissions'],
+                ['label' => 'LISTE DES RANGS', 'route' => 'ranks', 'icon' => 'fas fa-users', 'permission' => 'view-ranks']
+        ]);
+    $navbar->addDropDown('UTILISATEURS',
+        [
+                ['label' => 'LISTE DES UTILISATEURS', 'route' => 'allUsers', 'icon' => 'fas fa-users', 'permission' => 'view-users']
+        ]);
+    $navbar->addDropDown('PROJETS',
+        [
+                ['label' => 'LISTE DES PROJETS', 'route' => 'projects', 'icon' => 'fas fa-project-diagram', 'permission' => 'view-projects']
+        ]);
     $navbar->add('logout', 'SE DÉCONNECTER', 'fas fa-sign-out-alt', 'logout');
     $navbar->parse();
     ?>

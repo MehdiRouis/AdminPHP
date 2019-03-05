@@ -1,6 +1,7 @@
 $(function() {
     /** INITIALISATIONS OBJETS MATERIALIZE **/
     $('.sidenav').sidenav();
+    $('.collapsible').collapsible();
     /** FIN INITIALISATIONS OBJETS MATERIALIZE **/
     var parallax = document.querySelectorAll('.parallax');
     for(var i = 0; i < parallax.length; i++) {

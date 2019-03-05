@@ -13,6 +13,7 @@
 namespace App\Views;
 
 use App\Routes\Router;
+use Models\Users\User;
 
 class Navbar
 {
@@ -26,8 +27,14 @@ class Navbar
      */
     private $html;
 
+    /**
+     * @var User
+     */
+    private $user;
+
     public function __construct() {
         $this->router = $GLOBALS['router'];
+        $this->user = new User();
         $this->html = '<ul id="slide-out" class="sidenav sidenav-fixed">';
     }
 
@@ -58,7 +65,9 @@ class Navbar
     /**
      * @param string $routeName
      * @param string $label
-     * @param bool $icon
+     * @param bool|string $icon
+     * @param bool|string $classLi
+     * @param array $linkParams
      * @throws \Exception \App\Routes\RouterExceptions
      */
     public function add($routeName, $label, $icon = false, $classLi = false, $linkParams = []) {
@@ -85,6 +94,39 @@ class Navbar
         $icon = $icon ? '<i class="' . $icon . '"></i> ' : '';
         $classLi = $classLi ? ' class="' . $classLi . '"' : '';
         $this->addHTML('<li' . $classLi . '><a href="' . $link . '">' . $icon . $label . '</a></li>');
+    }
+
+    public function addDropDown($label, $content = [], $icon = false) {
+        $actualActive = '';
+        $style = '';
+        for($i = 0; $i < count($content); $i++) {
+            if($this->getRouter()->getActualRoute() === $content[$i]['route']) {
+                $actualActive = ' active';
+                $style = ' style="display : block;"';
+            }
+        }
+        $icon = $icon ? '<i class="' . $icon . '"></i> ' : '<i class="material-icons">arrow_drop_down</i> ';
+        $this->addHTML('<li class="no-padding' . $actualActive . '">');
+        $this->addHTML('<ul class="collapsible collapsible-accordion">');
+        $this->addHTML('<li>');
+        $this->addHTML('<a class="collapsible-header">' . $icon . $label . '</a>');
+        $this->addHTML('<div class="collapsible-body' . $actualActive . '"' . $style . '>');
+        $this->addHTML('<ul>');
+        foreach($content as $name => $options) {
+            $routeName = $options['route'];
+            $permission = isset($options['permission']) ? $this->user->hasRight($options['permission']) : true;
+            if ($permission) {
+                $liIcon = isset($options['icon']) ? '<i class="' . $options['icon'] . '"></i> ' : '';
+                $classActive = $this->getRouter()->getActualRoute() === $routeName ? ' active' : '';
+                $this->addHTML('<li class="item' . $classActive . '"><a class="item" href="' . $this->getRouter()->getFullUrl($routeName) . '">' . $liIcon . $options['label'] . '</a></li>');
+            }
+        }
+        $this->addHTML('</ul>');
+        $this->addHTML('</div>');
+        $this->addHTML('</li>');
+        $this->addHTML('</ul>');
+        $this->addHTML('</li>');
+
     }
 
     public function parse() {

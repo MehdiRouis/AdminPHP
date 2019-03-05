@@ -72,7 +72,7 @@ ul.sidenav > li:hover {
     background-image: linear-gradient(45deg, #FF5252 0%, #f48fb1 100%);
 }
 
-ul.sidenav > li:hover a {
+ul.sidenav > li.item:hover a.item {
     color : white;
 }
 
@@ -422,6 +422,11 @@ header {
 
 #home > .parallax-container {
     height : 250px;
+}
+
+#slide-out > li.no-padding > ul.collapsible > li > div.collapsible-body > ul > li:hover {
+    background-color : pink;
+    color : black;
 }
 
 header, main, footer {

@@ -19,6 +19,10 @@ use Models\Users\Rank;
  */
 class PermissionsController extends Controller {
 
+    /**
+     * @Route(path="/permissions/edit" name="permissions")
+     * @throws \Exception
+     */
     public function getEdition() {
         $this->user->restrict('edit-permissions');
         $permissions = new Permission();
@@ -26,6 +30,10 @@ class PermissionsController extends Controller {
         $this->render('permissions/list', ['pageName' => 'Liste des permissions', 'ranks' => $rank->getRanks('ORDER BY id DESC'), 'permissions' => $permissions->getPermissions('ORDER BY id'), 'scripts' => ['js/permissions.js']]);
     }
 
+    /**
+     * @Route(path="/permissions/edit" name="pEditPermission")
+     * @throws \Exception
+     */
     public function postEdition() {
         $this->user->restrict('edit-permissions');
         $validator = new Validator();

@@ -43,7 +43,7 @@ class Project {
     private $description;
 
     /**
-     * @var
+     * @var Status
      */
     private $status;
 
@@ -138,7 +138,7 @@ class Project {
     /**
      * @return int
      */
-    public function getId(): int {
+    public function getId(): ?int {
         return $this->id;
     }
 
@@ -164,6 +164,15 @@ class Project {
     }
 
     /**
+     * @param int $statusId
+     * @return \PDOStatement
+     */
+    public function setStatus($statusId): \PDOStatement {
+        $req = $this->db->query('UPDATE alive_projects SET statusId = ?, editedAt = ? WHERE id = ?', [$statusId, time(), $this->getId()]);
+        return $req;
+    }
+
+    /**
      * @return User
      */
     public function getCreatedBy(): User {
@@ -184,6 +193,18 @@ class Project {
     public function getEditedAt(): string {
         $date = new Parser($this->editedAt);
         return $date->format();
+    }
+
+    /**
+     * @return \PDOStatement
+     */
+    public function validate(): \PDOStatement {
+        return $this->setStatus(2);
+    }
+
+    public function delete(): \PDOStatement {
+        $req = $this->db->query('DELETE FROM alive_projects WHERE id = ?', [$this->getId()]);
+        return $req;
     }
 
 }

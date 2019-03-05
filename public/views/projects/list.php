@@ -37,10 +37,10 @@
                         <td data-label="Crée par"><?= $project->getCreatedBy()->getUserName(); ?></td>
                         <td data-label="Statut"><?= $project->getStatus()->getName(); ?></td>
                         <td data-label="Crée le"><?= $project->getCreatedAt(); ?></td>
-                        <td data-label="Accès"><a target="_blank" href="<?= $router->getFullUrl('project', ['id' => $project->getId()]); ?>" class="btn waves-effect waves-light">Voir</a></td>
+                        <td data-label="Accès"><a href="<?= $router->getFullUrl('project', ['id' => $project->getId()]); ?>" class="btn waves-effect waves-light">Voir</a></td>
                         <td data-label="Modifier">
                             <?php if($user->hasRight('edit-projects')) { ?>
-                                <a target="_blank" href="<?= $router->getFullUrl('editRank', ['id' => $project->getId()]); ?>" class="btn grey waves-effect waves-light">Modifier</a>
+                                <a href="<?= $router->getFullUrl('editRank', ['id' => $project->getId()]); ?>" class="btn grey waves-effect waves-light">Modifier</a>
                             <?php } ?>
                         </td>
                     </tr>

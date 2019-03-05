@@ -9,7 +9,7 @@
         <div class="card-content">
             <p class="card-title">Liste des utilisateurs</p>
             <div class="divider mb-10"></div>
-            <?php if($user->hasRight('edit-users')) { ?>
+            <?php if($user->hasRight('delete-users')) { ?>
                 <div id="deleteModal" class="modal">
                     <div class="modal-content red-text">
                         <h1>Suppression d'un projet</h1>
@@ -32,6 +32,9 @@
                     <th>Date de naissance</th>
                     <?php if($user->hasRight('edit-users')) { ?>
                         <th>Modifier</th>
+                    <?php } ?>
+                    <?php if($user->hasRight('delete-users')) { ?>
+                        <th>Supprimer</th>
                     <?php } ?>
                 </tr>
                 </thead>

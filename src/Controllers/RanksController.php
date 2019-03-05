@@ -15,12 +15,21 @@ use Models\Users\Rank;
 
 class RanksController extends Controller {
 
+    /**
+     * @Route(path="/ranks/list" name="ranks")
+     * @throws \Exception
+     */
     public function getList() {
         $this->user->restrict('view-ranks');
         $rank = new Rank();
         $this->render('ranks/list', ['pageName' => 'Rangs', 'ranks' => $rank->getRanks('ORDER BY id DESC')]);
     }
 
+    /**
+     * @Route(path="/rank/:id/edit" name="editRank")
+     * @RouteParam(param=":id" regex="[\d]+")
+     * @throws \Exception
+     */
     public function getEdition($id) {
         $this->user->restrict('edit-ranks');
         $rank = new Rank($id);
@@ -30,6 +39,11 @@ class RanksController extends Controller {
             $this->security->safeLocalRedirect('default');
         }
     }
+
+    /**
+     * @Route(path="/rank/edit" name="pEditRank")
+     * @throws \Exception
+     */
     public function postEdition() {
         $this->user->restrict('edit-ranks');
         $post = new Post();

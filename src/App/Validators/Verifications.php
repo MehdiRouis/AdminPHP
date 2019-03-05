@@ -55,12 +55,15 @@ class Verifications {
             'phoneNumber' => 'isValidPhoneNumber',
             'title' => 'isValidTitle',
             'description' => 'isValidDescription',
+            'rankId' => 'isValidRankId',
             'rankName' => 'isValidRankName',
             'icon' => 'isValidIcon',
             'color' => 'isValidColor',
             'image' => 'isValidPicture',
             'password' => 'isValidPassword',
-            'captcha' => 'isValidCaptcha'
+            'captcha' => 'isValidCaptcha',
+            'integer' => 'isValidInteger',
+            'profileType' => 'isValidProfileType'
         ];
     }
 
@@ -79,8 +82,10 @@ class Verifications {
      */
     public function verify($valueType, $content) {
         $found = false;
+        $name = false;
         foreach($this->inputTypes as $key => $value) {
             if($key === $valueType) {
+                $name = $key;
                 $found = $value;
             }
         }
@@ -89,7 +94,10 @@ class Verifications {
                 if(isset($value[key($value)]) && !empty($value[key($value)])) {
                     $this->$found(key($value), $value[key($value)]);
                 } else {
-                    $this->addError(key($value),'Champ vide.');
+                    $inputsWithoutNullVerification = ['integer'];
+                    if(isset($name) && !in_array($name, $inputsWithoutNullVerification)) {
+                        $this->addError(key($value), 'Champ vide.');
+                    }
                 }
             } else {
                 $this->addError(key($value), 'La clé "' . $valueType . '" de vérification est introuvable.');
@@ -97,6 +105,33 @@ class Verifications {
         }
     }
 
+    /**
+     * @param string $inputName
+     * @param string $inputValue
+     * @return bool
+     */
+    public function isValidInteger($inputName, $inputValue): bool {
+        if(intval($inputValue)) {
+            return true;
+        } else {
+            $this->addError($inputName, 'Merci d\'entrer un nombre valide.');
+        }
+        return false;
+    }
+
+    /**
+     * @param string $inputName
+     * @param string $inputValue
+     * @return bool
+     */
+    public function isValidProfileType($inputName, $inputValue): bool {
+       $validTypes = ['public', 'private'];
+        if(in_array($inputValue, $validTypes)) {
+            return true;
+        }
+        $this->addError($inputName, 'Erreur interne... Merci de réessayer plus tard.');
+        return false;
+    }
     /**
      * @param $inputName
      * @param $inputValue
@@ -184,10 +219,14 @@ class Verifications {
 
     public function isAdult($inputName, $inputValue): bool {
         if($this->isValidDate($inputName, $inputValue)) {
-            if($inputValue <= date('Y-m-d', strtotime('-18 years'))) {
-                return true;
+            if($inputValue <= date('Y-m-d') || $inputValue >= date('Y-m-d', strtotime('-100 years'))) {
+                if ($inputValue <= date('Y-m-d', strtotime('-18 years'))) {
+                    return true;
+                } else {
+                    $this->addError($inputName, 'Vous devez avoir la majorité.');
+                }
             } else {
-                $this->addError($inputName, 'Vous devez avoir la majorité.');
+                $this->addError($inputName, 'Date invalide.');
             }
         }
         return false;
@@ -293,6 +332,19 @@ class Verifications {
      * @param string $inputValue
      * @return bool
      */
+    public function isValidRankId($inputName, $inputValue) {
+        if($this->db->existContent('alive_users_ranks', 'id', $inputValue)) {
+            return true;
+        }
+        $this->addError('global', 'Erreur interne... Merci de réessayer plus tard.');
+        return false;
+    }
+
+    /**
+     * @param string $inputName
+     * @param string $inputValue
+     * @return bool
+     */
     public function isValidRankName($inputName, $inputValue) {
         if(preg_match('/^[a-zA-ZÂ-ÿ ]+$/', $inputValue)) {
             if(strlen($inputValue) > 3 && strlen($inputValue) < 50) {
@@ -374,7 +426,7 @@ class Verifications {
      */
     public function isValidCaptcha($inputName, $inputValue): bool {
         $session = new Session();
-        if($inputValue === $session->getValue('captcha')) {
+        if(strtoupper($inputValue) === $session->getValue('captcha')) {
             return true;
         }
         $this->addError($inputName, 'Captcha invalide.');
