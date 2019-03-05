@@ -61,11 +61,14 @@ class Controller {
         $this->security = new Security();
         $this->dbauth = new DBAuth();
         $this->user = new User();
-        if($this->user->getId()) {
-            $this->user->updateSession();
+        $checkUser = new User($this->user->getId());
+        if($checkUser->getId()) {
+            $this->user = new User($this->user->getId());
+        } else {
+            $this->dbauth->logOut();
         }
-        //$transport = (new \Swift_SendmailTransport('/usr/sbin/sendmail -bs'));
-        $transport = (new \Swift_SmtpTransport('smtp.gmail.com', 587, 'tls'))->setUsername('email@host.domain')->setPassword('password');
+        $transport = (new \Swift_SendmailTransport('/usr/sbin/sendmail -bs'));
+        //$transport = (new \Swift_SmtpTransport('smtp.gmail.com', 587, 'tls'))->setUsername('email@host.domain')->setPassword('password');
         $this->mail = new \Swift_Mailer($transport);
         $this->sms = new \App\SMS\Sender('esskafr', 'apiKey :3');
     }

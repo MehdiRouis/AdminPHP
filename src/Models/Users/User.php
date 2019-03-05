@@ -140,32 +140,9 @@ class User extends Session {
     /**
      * Création de la session à partir de l'instance.
      */
-    public function createSession(){
+    public function createSession() {
         $this->setValue('auth', $this->serialize());
         $this->setValue('token', $this->security->getUniqueToken());
-    }
-
-    /**
-     * Rafraîchir les informations de l'utilisateur à chaque chargement de page.
-     */
-    public function updateSession() {
-        $req = $this->db->query('SELECT * FROM alive_users WHERE id = ?', [$this->getId()]);
-        if ($req->rowCount() > 0) {
-            $user = $req->fetch();
-            $this->id = $user->id;
-            $this->userName = $user->userName;
-            $this->lastName = $user->lastName;
-            $this->firstName = $user->firstName;
-            $this->phoneNumber = $user->phoneNumber;
-            $this->birthDay = $user->birthDay;
-            $this->password = $user->password;
-            $this->rank = $user->rank;
-            $this->email = $user->email;
-            $this->shopPoints = $user->shopPoints;
-            $this->createdAt = $user->createdAt;;
-            $this->profileType = $user->profile_type;
-            $this->profileBanner = $user->profile_banner;
-        }
     }
 
     /**
