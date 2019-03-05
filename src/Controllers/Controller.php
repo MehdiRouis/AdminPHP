@@ -78,7 +78,7 @@ class Controller {
      */
     protected function sendMail($subject, $to, $message) {
         $templating = new EmailTemplating();
-        $message = (new \Swift_Message($subject))->setFrom(['stuuf.kdev@gmail.com' => 'AliveWebProject'])->setTo($to)->setBody($templating->getEmailTemplate($message), 'text/html', 'utf-8');
+        $message = (new \Swift_Message($subject))->setFrom(['no-reply@alivewebproject.fr' => 'AliveWebProject'])->setTo($to)->setBody($templating->getEmailTemplate($message), 'text/html', 'utf-8');
         return $this->mail->send($message);
     }
 
